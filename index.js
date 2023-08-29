@@ -19,6 +19,10 @@ db.on("error", (error) => {
   console.log(error);
 });
 
+// Body-Parser Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.get("/", async (req, res) => {
   const articles = await Article.find({});
   res.status(200).json({
