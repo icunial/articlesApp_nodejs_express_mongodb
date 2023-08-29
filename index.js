@@ -31,6 +31,18 @@ app.get("/", async (req, res) => {
   });
 });
 
+// Create an Article
+app.post("/", async (req, res) => {
+  const { title, author, body } = req.body;
+  const articleCreated = await Article.create({ title, author, body });
+  if (articleCreated) {
+    return res.status(201).json({
+      statusCode: 201,
+      data: articleCreated,
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
 });
