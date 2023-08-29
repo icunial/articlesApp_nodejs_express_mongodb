@@ -1,6 +1,11 @@
 const express = require("express");
 const app = express();
 
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/articles_db");
+const db = mongoose.connection;
+
 const PORT = 5000 || process.env.PORT;
 
 app.get("/", (req, res) => {
