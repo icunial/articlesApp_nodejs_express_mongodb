@@ -7,6 +7,20 @@ const bcrypt = require("bcryptjs");
 
 const passport = require("passport");
 
+// Get Logged in user
+router.get("/user", (req, res) => {
+  if (req.user)
+    return res.status(200).json({
+      statusCode: 200,
+      data: req.user,
+    });
+  else
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `No user logged in!`,
+    });
+});
+
 // Register Process
 router.post("/register", async (req, res) => {
   const { name, email, username, password, password2 } = req.body;
