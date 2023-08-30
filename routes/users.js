@@ -3,6 +3,8 @@ const router = express.Router();
 
 const User = require("../models/User");
 
+const bcrypt = require("bcryptjs");
+
 router.get("/register", (req, res) => {
   console.log("/users/register");
 });
@@ -49,6 +51,15 @@ router.post("/register", async (req, res) => {
       msg: `Password and Password Confirmation not match!`,
     });
   }
+
+  // Hash password
+  bcrypt.getSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      if (error) {
+        console.log(err);
+      }
+    });
+  });
 });
 
 module.exports = router;
