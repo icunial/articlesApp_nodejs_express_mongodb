@@ -8,7 +8,8 @@ const db = mongoose.connection;
 
 const PORT = 5000 || process.env.PORT;
 
-const router = require("./routes/articles");
+const articlesRouter = require("./routes/articles");
+const usersRouter = require("./routes/users");
 
 // Check connection
 db.once("open", () => {
@@ -34,8 +35,9 @@ app.use(express.urlencoded({ extended: false }));
   })
 ); */
 
-// Add router
-app.use("/", router);
+// Add routers
+app.use("/articles", articlesRouter);
+app.use("/users", usersRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
