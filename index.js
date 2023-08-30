@@ -72,6 +72,21 @@ app.put("/:id", async (req, res) => {
   }
 });
 
+// Delete Article
+app.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const articleToDelete = await Article.findById(id);
+  if (articleToDelete) {
+    const deleted = await Article.deleteOne({ _id: id });
+    if (deleted) {
+      return res.status(200).json({
+        statusCode: 200,
+        data: articleToDelete,
+      });
+    }
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
 });
