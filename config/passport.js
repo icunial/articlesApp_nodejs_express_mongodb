@@ -7,22 +7,26 @@ module.exports = (passport) => {
   // Local Strategy
   passport.use(
     new LocalStrategy(async (username, password, done) => {
-      // Match Username
-      const userFound = await User.findOne({ username });
-      if (userFound) {
-        // Match Password
-        bcrypt.compare(password, userFound.password, (err, isMatch) => {
-          if (err) {
-            throw err;
-          }
-          if (isMatch) {
-            return done(null, userFound);
-          } else {
-            return done(null, false, { msg: `Incorrect password` });
-          }
-        });
-      } else {
-        return done(null, false, { msg: `Incorrect username` });
+      try {
+        // Match Username
+        const userFound = await User.findOne({ username: username });
+        if (userFound) {
+          // Match Password
+          bcrypt.compare(password, userFound.password, (err, isMatch) => {
+            if (err) {
+              throw err;
+            }
+            if (isMatch) {
+              return done(null, userFound);
+            } else {
+              return done(null, false, { msg: `Incorrect password` });
+            }
+          });
+        } else {
+          return done(null, false, { msg: `Incorrect username` });
+        }
+      } catch (error) {
+        console.log(error);
       }
     })
   );
@@ -32,11 +36,15 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    const userFound = await User.findById(id);
-    if (userFound) {
-      done(null, userFound);
-    } else {
-      done(null, { msg: `User not found!` });
+    try {
+      const userFound = await User.findById(id);
+      if (userFound) {
+        done(null, userFound);
+      } else {
+        done(null, { msg: `User not found!` });
+      }
+    } catch (error) {
+      done(error, null);
     }
   });
 };
