@@ -31,6 +31,18 @@ app.get("/", async (req, res) => {
   });
 });
 
+// Get Single Article
+app.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const articleFound = await Article.findById(id);
+  if (articleFound) {
+    return res.status(200).json({
+      statusCode: 200,
+      data: articleFound,
+    });
+  }
+});
+
 // Create an Article
 app.post("/", async (req, res) => {
   const { title, author, body } = req.body;
