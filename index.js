@@ -23,6 +23,16 @@ db.on("error", (error) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Express Session Middleware
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+
 app.get("/", async (req, res) => {
   const articles = await Article.find({});
   res.status(200).json({
