@@ -93,15 +93,13 @@ router.post("/login", (req, res, next) => {
     if (!user)
       return res.status(404).json({
         statusCode: 404,
-        msg: `No user exists!`,
+        msg: info.msg,
       });
     req.logIn(user, (error) => {
-      console.log(user);
       if (error) throw error;
       return res.status(200).send(true);
     });
   })(req, res, next);
-  //const { username, password } = req.body;
 });
 
 // Logout Process
