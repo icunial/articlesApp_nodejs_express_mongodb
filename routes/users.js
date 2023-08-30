@@ -53,10 +53,22 @@ router.post("/register", async (req, res) => {
   }
 
   // Hash password
-  bcrypt.getSalt(10, (err, salt) => {
-    bcrypt.hash(password, salt, (err, hash) => {
-      if (error) {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, async (err, hash) => {
+      if (err) {
         console.log(err);
+      }
+      const userCreated = await User.create({
+        name,
+        email,
+        username,
+        password: hash,
+      });
+      if (userCreated) {
+        return res.status(201).json({
+          statusCode: 201,
+          data: userCreated,
+        });
       }
     });
   });
