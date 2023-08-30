@@ -55,6 +55,23 @@ app.post("/", async (req, res) => {
   }
 });
 
+// Update Article
+app.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
+  if (articleUpdated) {
+    const articleFound = await Article.findById(id);
+    if (articleFound) {
+      return res.status(200).json({
+        statusCode: 200,
+        data: articleFound,
+      });
+    }
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
 });
