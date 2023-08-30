@@ -5,9 +5,7 @@ const User = require("../models/User");
 
 const bcrypt = require("bcryptjs");
 
-router.get("/register", (req, res) => {
-  console.log("/users/register");
-});
+const passport = require("passport");
 
 // Register Process
 router.post("/register", async (req, res) => {
@@ -72,6 +70,24 @@ router.post("/register", async (req, res) => {
       }
     });
   });
+});
+
+// Login Process
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (error, user, info) => {
+    if (error) console.log(error);
+    if (!user)
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `No user exists!`,
+      });
+    req.logIn(user, (error) => {
+      console.log(user);
+      if (error) throw error;
+      return res.status(200).json(true);
+    });
+  })(req, res, next);
+  //const { username, password } = req.body;
 });
 
 module.exports = router;
