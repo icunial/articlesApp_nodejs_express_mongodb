@@ -84,10 +84,18 @@ router.post("/login", (req, res, next) => {
     req.logIn(user, (error) => {
       console.log(user);
       if (error) throw error;
-      return res.status(200).json(true);
+      return res.status(200).send(true);
     });
   })(req, res, next);
   //const { username, password } = req.body;
+});
+
+// Logout Process
+router.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.status(200).send(false);
+  });
 });
 
 module.exports = router;
