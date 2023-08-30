@@ -11,6 +11,8 @@ const PORT = 5000 || process.env.PORT;
 const articlesRouter = require("./routes/articles");
 const usersRouter = require("./routes/users");
 
+const passport = require("passport");
+
 // Check connection
 db.once("open", () => {
   console.log("Connected to MongoDB");
@@ -34,6 +36,11 @@ app.use(express.urlencoded({ extended: false }));
     cookie: { secure: true },
   })
 ); */
+
+// Passport Config
+require("./config/passport")(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Add routers
 app.use("/articles", articlesRouter);
