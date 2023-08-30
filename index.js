@@ -24,14 +24,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Express Session Middleware
-app.use(
+/* app.use(
   session({
     secret: "secret",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true },
   })
-);
+); */
 
 app.get("/", async (req, res) => {
   const articles = await Article.find({});
@@ -56,6 +56,27 @@ app.get("/:id", async (req, res) => {
 // Create an Article
 app.post("/", async (req, res) => {
   const { title, author, body } = req.body;
+
+  // Validations
+  if (!title) {
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `Title is required!`,
+    });
+  }
+  if (!author) {
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `Author is required!`,
+    });
+  }
+  if (!body) {
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `Body is required!`,
+    });
+  }
+
   const articleCreated = await Article.create({ title, author, body });
   if (articleCreated) {
     return res.status(201).json({
