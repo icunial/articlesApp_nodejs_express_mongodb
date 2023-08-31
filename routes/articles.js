@@ -108,7 +108,7 @@ router.put("/:id", ensureAuthenticated, async (req, res) => {
 router.delete("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const articleToDelete = await Article.findById(id);
-  if (articleUpdated.author !== req.user._id) {
+  if (articleToDelete.author !== req.user._id) {
     return res.status(401).json({
       statusCode: 401,
       msg: `You can not delete an article that is not yours!`,
