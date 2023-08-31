@@ -4,6 +4,18 @@ const router = express.Router();
 const Article = require("../models/Article");
 const User = require("../models/User");
 
+// Access Control
+const ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(401).json({
+      statusCode: 401,
+      msg: `You are not authorized! Please login...`,
+    });
+  }
+};
+
 router.get("/", async (req, res) => {
   const articles = await Article.find({});
   res.status(200).json({
@@ -13,7 +25,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get Single Article
-router.get("/:id", async (req, res) => {
+router.get("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const articleFound = await Article.findById(id);
   if (articleFound) {
@@ -33,7 +45,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create an Article
-router.post("/", async (req, res) => {
+router.post("/", ensureAuthenticated, async (req, res) => {
   const { title, body } = req.body;
 
   // Validations
@@ -70,7 +82,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update Article
-router.put("/:id", async (req, res) => {
+router.put("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const body = req.body;
 
@@ -87,7 +99,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete Article
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const articleToDelete = await Article.findById(id);
   if (articleToDelete) {
