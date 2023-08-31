@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
 
 // Create an Article
 router.post("/", async (req, res) => {
-  const { title, author, body } = req.body;
+  const { title, body } = req.body;
 
   // Validations
   if (!title) {
@@ -34,12 +34,12 @@ router.post("/", async (req, res) => {
       msg: `Title is required!`,
     });
   }
-  if (!author) {
+  /*  if (!author) {
     return res.status(400).json({
       statusCode: 400,
       msg: `Author is required!`,
     });
-  }
+  } */
   if (!body) {
     return res.status(400).json({
       statusCode: 400,
@@ -47,7 +47,11 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const articleCreated = await Article.create({ title, author, body });
+  const articleCreated = await Article.create({
+    title,
+    author: req.user._id,
+    body,
+  });
   if (articleCreated) {
     return res.status(201).json({
       statusCode: 201,
