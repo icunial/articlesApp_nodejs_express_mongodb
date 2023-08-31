@@ -87,6 +87,12 @@ router.put("/:id", ensureAuthenticated, async (req, res) => {
   const body = req.body;
 
   const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
+  if (articleUpdated.author !== req.user._id) {
+    return res.status(401).json({
+      statusCode: 401,
+      msg: `You can not update an article that is not yours!`,
+    });
+  }
   if (articleUpdated) {
     const articleFound = await Article.findById(id);
     if (articleFound) {
@@ -102,6 +108,12 @@ router.put("/:id", ensureAuthenticated, async (req, res) => {
 router.delete("/:id", ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const articleToDelete = await Article.findById(id);
+  if (articleUpdated.author !== req.user._id) {
+    return res.status(401).json({
+      statusCode: 401,
+      msg: `You can not delete an article that is not yours!`,
+    });
+  }
   if (articleToDelete) {
     const deleted = await Article.deleteOne({ _id: id });
     if (deleted) {
