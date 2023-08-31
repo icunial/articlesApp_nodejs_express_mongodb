@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Article = require("../models/Article");
+const User = require("../models/User");
 
 router.get("/", async (req, res) => {
   const articles = await Article.find({});
@@ -16,10 +17,18 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const articleFound = await Article.findById(id);
   if (articleFound) {
-    return res.status(200).json({
-      statusCode: 200,
-      data: articleFound,
-    });
+    const userFound = await User.findById(articleFound.author);
+    if (userFound) {
+      return res.status(200).json({
+        statusCode: 200,
+        data: {
+          id: articleFound._id,
+          title: articleFound.title,
+          author: userFound.username,
+          body: articleFound.body,
+        },
+      });
+    }
   }
 });
 
