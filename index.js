@@ -11,6 +11,7 @@ const PORT = 5000 || process.env.PORT;
 const articlesRouter = require("./routes/articles");
 const usersRouter = require("./routes/users");
 
+const session = require("express-session");
 const passport = require("passport");
 
 // Check connection
@@ -28,14 +29,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Express Session Middleware
-/* app.use(
+app.use(
   session({
     secret: "secret",
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
+    saveUninitialized: false,
   })
-); */
+);
 
 // Passport Config
 require("./config/passport")(passport);
