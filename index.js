@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
 
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost/articles_db");
+mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
 const db = mongoose.connection;
 
 const PORT = 5000 || process.env.PORT;
@@ -24,6 +26,8 @@ db.on("error", (error) => {
   console.log(error);
 });
 
+//db.dropCollection("articles");
+
 // Body-Parser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,7 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 // Express Session Middleware
 app.use(
   session({
-    secret: "secret",
+    secret: `${process.env.SESSION_SECRET}`,
     resave: false,
     saveUninitialized: false,
   })
