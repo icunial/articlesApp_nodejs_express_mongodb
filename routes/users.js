@@ -22,7 +22,7 @@ router.get("/user", (req, res) => {
 });
 
 // Get all users
-router.get("/all", async (req, res) => {
+router.get("/all", async (req, res, next) => {
   try {
     const users = await User.find({});
     if (!users.length) {
@@ -36,7 +36,7 @@ router.get("/all", async (req, res) => {
       data: users,
     });
   } catch (error) {
-    console.log(error);
+    return next(error);
   }
 });
 
