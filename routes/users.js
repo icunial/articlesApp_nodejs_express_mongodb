@@ -21,6 +21,25 @@ router.get("/user", (req, res) => {
     });
 });
 
+// Get all users
+router.get("/all", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (!users.length) {
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `No users saved in DB`,
+      });
+    }
+    res.status(200).json({
+      statusCode: 200,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // Register Process
 router.post("/register", async (req, res) => {
   const { name, email, username, password, password2 } = req.body;
