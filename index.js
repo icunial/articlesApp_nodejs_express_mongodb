@@ -50,6 +50,17 @@ app.use(passport.session());
 app.use("/articles", articlesRouter);
 app.use("/users", usersRouter);
 
+// Error catching endware
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || err;
+  res.status(status).json({
+    statusCode: status,
+    msg: message,
+  });
+});
+
+// Initialized Express Server
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}...`);
 });
