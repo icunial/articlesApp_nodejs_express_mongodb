@@ -114,6 +114,8 @@ describe("User collection is not empty", () => {
   });
 });
 
+let cookie = "";
+
 describe("Login Process", () => {
   it("it should return 400 -> Username is required", async () => {
     const user = {
@@ -157,5 +159,16 @@ describe("Login Process", () => {
     const response = await request(app).post("/users/login").send(user);
     expect(response.status).toBe(200);
     expect(response.body).toBe(true);
+    cookie = response.headers["set-cookie"];
+  });
+});
+
+describe("Get logged in user", () => {
+  it("it should return 200 status code -> user is logged in", async () => {
+    const response = await request(app)
+      .get("/users/user")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body.data.name).toBe("User 1");
   });
 });
