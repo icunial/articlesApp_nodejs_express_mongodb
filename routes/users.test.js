@@ -182,3 +182,13 @@ describe("Logout process", () => {
     expect(response.body).toBe(false);
   });
 });
+
+describe("Get Bad Request -> no user logged in", () => {
+  it("it should return 400 status code -> no user logged in", async () => {
+    const response = await request(app)
+      .get("/users/user")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("No user logged in!");
+  });
+});
