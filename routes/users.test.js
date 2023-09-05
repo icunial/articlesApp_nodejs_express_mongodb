@@ -140,4 +140,13 @@ describe("Login Process", () => {
     expect(response.status).toBe(404);
     expect(response.body.msg).toBe("Incorrect username");
   });
+  it("it should return 404 -> Incorrect password", async () => {
+    const user = {
+      username: "user1",
+      password: "12345",
+    };
+    const response = await request(app).post("/users/login").send(user);
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("Incorrect password");
+  });
 });
