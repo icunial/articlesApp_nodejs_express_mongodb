@@ -113,3 +113,22 @@ describe("User collection is not empty", () => {
     expect(response.body.data.length).toBe(1);
   });
 });
+
+describe("Login Process", () => {
+  it("it should return 400 -> Username is required", async () => {
+    const user = {
+      password: "1234",
+    };
+    const response = await request(app).post("/users/login").send(user);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Username is required!");
+  });
+  it("it should return 400 -> Password is required", async () => {
+    const user = {
+      username: "user1",
+    };
+    const response = await request(app).post("/users/login").send(user);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Password is required!");
+  });
+});
