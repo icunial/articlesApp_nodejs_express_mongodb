@@ -16,12 +16,22 @@ const ensureAuthenticated = (req, res, next) => {
   }
 };
 
-router.get("/", async (req, res) => {
-  const articles = await Article.find({});
-  res.status(200).json({
-    statusCode: 200,
-    data: articles,
-  });
+router.get("/", async (req, res, next) => {
+  try {
+    const articles = await Article.find({});
+    if (!articles.length) {
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `No articles saved in DB`,
+      });
+    }
+    res.status(200).json({
+      statusCode: 200,
+      data: articles,
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
 // Get Single Article
