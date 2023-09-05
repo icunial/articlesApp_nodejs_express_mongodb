@@ -172,3 +172,13 @@ describe("Get logged in user", () => {
     expect(response.body.data.name).toBe("User 1");
   });
 });
+
+describe("Logout process", () => {
+  it("it should return 200 status code -> user is logged out", async () => {
+    const response = await request(app)
+      .get("/users/logout")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body).toBe(false);
+  });
+});
