@@ -55,7 +55,7 @@ router.get("/:id", ensureAuthenticated, async (req, res) => {
 });
 
 // Create an Article
-router.post("/", ensureAuthenticated, async (req, res) => {
+router.post("/", ensureAuthenticated, async (req, res, next) => {
   const { title, body } = req.body;
 
   // Validations
@@ -78,16 +78,20 @@ router.post("/", ensureAuthenticated, async (req, res) => {
     });
   }
 
-  const articleCreated = await Article.create({
-    title,
-    author: req.user._id,
-    body,
-  });
-  if (articleCreated) {
-    return res.status(201).json({
-      statusCode: 201,
-      data: articleCreated,
+  try {
+    const articleCreated = await Article.create({
+      title,
+      author: req.user._id,
+      body,
     });
+    if (articleCreated) {
+      return res.status(201).json({
+        statusCode: 201,
+        data: articleCreated,
+      });
+    }
+  } catch (error) {
+    return next(error);
   }
 });
 
