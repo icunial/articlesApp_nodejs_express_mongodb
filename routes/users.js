@@ -111,15 +111,29 @@ router.post("/register", async (req, res, next) => {
 
 // Login Process
 router.post("/login", (req, res, next) => {
+  const { username, password } = req.body;
+  if (!username) {
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `Username is required!`,
+    });
+  }
+  if (!password) {
+    return res.status(400).json({
+      statusCode: 400,
+      msg: `Password is required!`,
+    });
+  }
   passport.authenticate("local", (error, user, info) => {
-    if (error) console.log(error);
-    if (!user)
+    if (error) return next(error);
+    if (!user) {
       return res.status(404).json({
         statusCode: 404,
         msg: info.msg,
       });
+    }
     req.logIn(user, (error) => {
-      if (error) throw error;
+      if (error) return next(error);
       return res.status(200).send(true);
     });
   })(req, res, next);
