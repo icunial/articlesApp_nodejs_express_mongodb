@@ -47,6 +47,14 @@ describe("User login process", () => {
     expect(response.body).toBe(true);
     cookie = response.headers["set-cookie"];
   });
+  it("it should return 200 status code -> return user logged in data", async () => {
+    const response = await request(app)
+      .get("/users/user")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body.data.name).toBe("User 1");
+    user_id = response.body.data._id;
+  });
 });
 
 describe("Create Article process", () => {
@@ -84,5 +92,6 @@ describe("Create Article process", () => {
     console.log(response.body.data);
     expect(response.status).toBe(201);
     expect(response.body.data.title).toBe("Title 1");
+    expect(response.body.data.author).toBe(user_id);
   });
 });
