@@ -105,3 +105,11 @@ describe("User Register", () => {
     expect(response.body.data.name).toBe("User 1");
   });
 });
+
+describe("User collection is not empty", () => {
+  it("it should return a 200 status code -> User collection is not empty", async () => {
+    const response = await request(app).get("/users/all");
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+  });
+});
