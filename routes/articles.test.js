@@ -15,6 +15,27 @@ afterAll((done) => {
 });
 
 let cookie = "";
+let user_id = "";
+
+describe("Collection empty -> no articles saved in DB", () => {
+  it("it should return 404 status code -> no articles saved in DB", async () => {
+    const response = await request(app).get("/articles");
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("No articles saved in DB");
+  });
+});
+
+describe("Create new articles -> no user logged in", () => {
+  it("it should return 401 status code -> not authorized", async () => {
+    const article = {
+      title: "Title 1",
+      body: "Body of title 1",
+    };
+    const response = await request(app).post("/articles").send(article);
+    expect(response.status).toBe(401);
+    expect(response.body.msg).toBe("You are not authorized! Please login...");
+  });
+});
 
 describe("User login process", () => {
   it("it should return 200 status code -> user logged in", async () => {
@@ -28,10 +49,40 @@ describe("User login process", () => {
   });
 });
 
-describe("Collection empty -> no articles saved in DB", () => {
-  it("it should return 404 status code -> no articles saved in DB", async () => {
-    const response = await request(app).get("/articles");
-    expect(response.status).toBe(404);
-    expect(response.body.msg).toBe("No articles saved in DB");
+describe("Create Article process", () => {
+  it("it should return 400 status code -> title is required", async () => {
+    const article = {
+      body: "Body of title 1",
+    };
+    const response = await request(app)
+      .post("/articles")
+      .send(article)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Title is required!");
+  });
+  it("it should return 400 status code -> Body is required", async () => {
+    const article = {
+      title: "Title 1",
+    };
+    const response = await request(app)
+      .post("/articles")
+      .send(article)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Body is required!");
+  });
+  it("it should return 201 status code -> create new article success", async () => {
+    const article = {
+      title: "Title 1",
+      body: "Body of Title 1",
+    };
+    const response = await request(app)
+      .post("/articles")
+      .send(article)
+      .set("Cookie", cookie);
+    console.log(response.body.data);
+    expect(response.status).toBe(201);
+    expect(response.body.data.title).toBe("Title 1");
   });
 });
