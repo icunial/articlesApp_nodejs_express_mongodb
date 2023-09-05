@@ -108,4 +108,10 @@ describe("Create Article process", () => {
     expect(response.body.data.title).toBe("Title 2");
     expect(response.body.data.author).toBe(user_id);
   });
+  it("it should return 200 status code -> articles collection is not empty", async () => {
+    const response = await request(app).get("/articles");
+    console.log(response.body.data);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(2);
+  });
 });
