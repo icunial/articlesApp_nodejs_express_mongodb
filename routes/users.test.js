@@ -56,4 +56,15 @@ describe("User Register", () => {
     expect(response.status).toBe(400);
     expect(response.body.msg).toBe("Username is required!");
   });
+  it("it should return a 400 status code -> Password is required", async () => {
+    const user = {
+      name: "User 1",
+      email: "user1@email.com",
+      username: "user1",
+      password2: "1234",
+    };
+    const response = await request(app).post("/users/register").send(user);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Password is required!");
+  });
 });
