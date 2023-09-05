@@ -15,9 +15,23 @@ afterAll((done) => {
 });
 
 describe("Collection empty", () => {
-  it("it should return a 404 status code -> Database is empty", async () => {
+  it("it should return a 404 status code -> User collection is empty", async () => {
     const response = await request(app).get("/users/all");
     expect(response.status).toBe(404);
     expect(response.body.msg).toBe("No users saved in DB");
+  });
+});
+
+describe("User Register", () => {
+  it("it should return a 400 status code -> Name is required", async () => {
+    const user = {
+      email: "user1@email.com",
+      username: "user1",
+      password: "1234",
+      password2: "1234",
+    };
+    const response = await request(app).post("/users/register").send(user);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe("Name is required!");
   });
 });
