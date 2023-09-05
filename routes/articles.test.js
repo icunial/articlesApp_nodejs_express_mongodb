@@ -27,3 +27,11 @@ describe("User login process", () => {
     cookie = response.headers["set-cookie"];
   });
 });
+
+describe("Collection empty -> no articles saved in DB", () => {
+  it("it should return 404 status code -> no articles saved in DB", async () => {
+    const response = await request(app).get("/articles");
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe("No articles saved in DB");
+  });
+});
