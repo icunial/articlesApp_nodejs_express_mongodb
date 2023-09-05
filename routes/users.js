@@ -41,7 +41,7 @@ router.get("/all", async (req, res, next) => {
 });
 
 // Register Process
-router.post("/register", async (req, res) => {
+router.post("/register", async (req, res, next) => {
   const { name, email, username, password, password2 } = req.body;
 
   // Validations
@@ -87,19 +87,23 @@ router.post("/register", async (req, res) => {
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(password, salt, async (err, hash) => {
       if (err) {
-        console.log(err);
+        return next(err);
       }
-      const userCreated = await User.create({
-        name,
-        email,
-        username,
-        password: hash,
-      });
-      if (userCreated) {
-        return res.status(201).json({
-          statusCode: 201,
-          data: userCreated,
+      try {
+        const userCreated = await User.create({
+          name,
+          email,
+          username,
+          password: hash,
         });
+        if (userCreated) {
+          return res.status(201).json({
+            statusCode: 201,
+            data: userCreated,
+          });
+        }
+      } catch (error) {
+        return next(error);
       }
     });
   });
