@@ -78,4 +78,18 @@ describe("User Register", () => {
     expect(response.status).toBe(400);
     expect(response.body.msg).toBe("Password confirmation is required!");
   });
+  it("it should return a 400 status code -> Password and Password confirmation must match", async () => {
+    const user = {
+      name: "User 1",
+      email: "user1@email.com",
+      username: "user1",
+      password: "1234",
+      password2: "123",
+    };
+    const response = await request(app).post("/users/register").send(user);
+    expect(response.status).toBe(400);
+    expect(response.body.msg).toBe(
+      "Password and Password Confirmation not match!"
+    );
+  });
 });
