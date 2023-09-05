@@ -149,4 +149,13 @@ describe("Login Process", () => {
     expect(response.status).toBe(404);
     expect(response.body.msg).toBe("Incorrect password");
   });
+  it("it should return 200 status code -> Login success", async () => {
+    const user = {
+      username: "user1",
+      password: "1234",
+    };
+    const response = await request(app).post("/users/login").send(user);
+    expect(response.status).toBe(200);
+    expect(response.body).toBe(true);
+  });
 });
