@@ -35,22 +35,36 @@ router.get("/", async (req, res, next) => {
 });
 
 // Get Single Article
-router.get("/:id", ensureAuthenticated, async (req, res) => {
+router.get("/:id", ensureAuthenticated, async (req, res, next) => {
   const { id } = req.params;
-  const articleFound = await Article.findById(id);
-  if (articleFound) {
-    const userFound = await User.findById(articleFound.author);
-    if (userFound) {
-      return res.status(200).json({
-        statusCode: 200,
-        data: {
-          id: articleFound._id,
-          title: articleFound.title,
-          author: userFound.username,
-          body: articleFound.body,
-        },
+  try {
+    const articleFound = await Article.findById(id);
+    if (articleFound) {
+      const userFound = await User.findById(articleFound.author);
+      if (userFound) {
+        return res.status(200).json({
+          statusCode: 200,
+          data: {
+            id: articleFound._id,
+            title: articleFound.title,
+            author: userFound.username,
+            body: articleFound.body,
+          },
+        });
+      } else {
+        return res.status(404).json({
+          statusCode: 404,
+          msg: `User with ID: ${articleFound.author} not found!`,
+        });
+      }
+    } else {
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `Article with ID: ${id} not found!`,
       });
     }
+  } catch (error) {
+    return next(error);
   }
 });
 
