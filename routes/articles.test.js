@@ -94,4 +94,18 @@ describe("Create Article process", () => {
     expect(response.body.data.title).toBe("Title 1");
     expect(response.body.data.author).toBe(user_id);
   });
+  it("it should return 201 status code -> create a new article", async () => {
+    const article = {
+      title: "Title 2",
+      body: "Body of Title 2",
+    };
+    const response = await request(app)
+      .post("/articles")
+      .send(article)
+      .set("Cookie", cookie);
+    console.log(response.body.data);
+    expect(response.status).toBe(201);
+    expect(response.body.data.title).toBe("Title 2");
+    expect(response.body.data.author).toBe(user_id);
+  });
 });
