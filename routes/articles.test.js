@@ -110,7 +110,6 @@ describe("Create Article process", () => {
   });
   it("it should return 200 status code -> articles collection is not empty", async () => {
     const response = await request(app).get("/articles");
-    console.log(response.body.data);
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBe(2);
   });
@@ -132,6 +131,32 @@ describe("Get an article by its id", () => {
       .set("Cookie", cookie);
     expect(response.status).toBe(200);
     expect(response.body.data.title).toBe("Title 1");
+  });
+});
+
+describe("Update articles process", () => {
+  it("it should return 404 status code -> article id not found", async () => {
+    const id = "64f7d1c5c19c8e4e9718caaf";
+    const body = {
+      title: "New Title",
+    };
+    const response = await request(app)
+      .put(`/articles/${id}`)
+      .send(body)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe(`Article with ID: ${id} not found!`);
+  });
+  it("it should return 200 status code -> article updated successfully", async () => {
+    const body = {
+      title: "New Title",
+    };
+    const response = await request(app)
+      .put(`/articles/${article_id}`)
+      .send(body)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body.data.title).toBe("New Title");
   });
 });
 
