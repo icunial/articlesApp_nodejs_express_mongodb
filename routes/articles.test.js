@@ -176,6 +176,11 @@ describe("Delete article process", () => {
     expect(response.status).toBe(200);
     expect(response.body.data.title).toBe("New Title");
   });
+  it("it should return 200 status code -> articles collection length must be 1", async () => {
+    const response = await request(app).get("/articles");
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+  });
 });
 
 describe("Logout user", () => {
