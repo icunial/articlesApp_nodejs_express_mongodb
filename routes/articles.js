@@ -146,23 +146,37 @@ router.put("/:id", ensureAuthenticated, async (req, res, next) => {
 });
 
 // Delete Article
-router.delete("/:id", ensureAuthenticated, async (req, res) => {
+router.delete("/:id", ensureAuthenticated, async (req, res, next) => {
   const { id } = req.params;
-  const articleToDelete = await Article.findById(id);
-  if (articleToDelete.author !== req.user._id) {
-    return res.status(401).json({
-      statusCode: 401,
-      msg: `You can not delete an article that is not yours!`,
-    });
-  }
-  if (articleToDelete) {
-    const deleted = await Article.deleteOne({ _id: id });
-    if (deleted) {
-      return res.status(200).json({
-        statusCode: 200,
-        data: articleToDelete,
+
+  try {
+    const articleToDelete = await Article.findById(id);
+    if (articleToDelete) {
+      if (articleToDelete.author !== req.user._id.toString()) {
+        return res.status(401).json({
+          statusCode: 401,
+          msg: `You can not delete an article that is not yours!`,
+        });
+      }
+
+      const deleted = await Article.deleteOne({ _id: id });
+
+      if (deleted.acknowledged) {
+        return res.status(200).json({
+          statusCode: 200,
+          data: articleToDelete,
+        });
+      } else {
+        return next("Error trying to delete an article");
+      }
+    } else {
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `Article with ID: ${id} not found!`,
       });
     }
+  } catch (error) {
+    return next(error);
   }
 });
 
