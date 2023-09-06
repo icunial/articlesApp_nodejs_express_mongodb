@@ -169,6 +169,13 @@ describe("Delete article process", () => {
     expect(response.status).toBe(404);
     expect(response.body.msg).toBe(`Article with ID: ${id} not found!`);
   });
+  it("it should return 200 status code -> article deleted successfully", async () => {
+    const response = await request(app)
+      .delete(`/articles/${article_id}`)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body.data.title).toBe("New Title");
+  });
 });
 
 describe("Logout user", () => {
