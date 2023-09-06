@@ -110,25 +110,34 @@ router.post("/", ensureAuthenticated, async (req, res, next) => {
 });
 
 // Update Article
-router.put("/:id", ensureAuthenticated, async (req, res) => {
+router.put("/:id", ensureAuthenticated, async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
 
-  const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
-  if (articleUpdated.author !== req.user._id) {
-    return res.status(401).json({
-      statusCode: 401,
-      msg: `You can not update an article that is not yours!`,
-    });
-  }
-  if (articleUpdated) {
-    const articleFound = await Article.findById(id);
-    if (articleFound) {
-      return res.status(200).json({
-        statusCode: 200,
-        data: articleFound,
+  try {
+    const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
+    if (articleUpdated.author !== req.user._id) {
+      return res.status(401).json({
+        statusCode: 401,
+        msg: `You can not update an article that is not yours!`,
       });
     }
+    if (articleUpdated) {
+      const articleFound = await Article.findById(id);
+      if (articleFound) {
+        return res.status(200).json({
+          statusCode: 200,
+          data: articleFound,
+        });
+      } else {
+        return res.status(404).json({
+          statusCode: 404,
+          msg: `Article with ID: ${id} not found!`,
+        });
+      }
+    }
+  } catch (error) {
+    return next(error);
   }
 });
 
