@@ -115,26 +115,30 @@ router.put("/:id", ensureAuthenticated, async (req, res, next) => {
   const body = req.body;
 
   try {
-    const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
-    if (articleUpdated.author !== req.user._id) {
-      return res.status(401).json({
-        statusCode: 401,
-        msg: `You can not update an article that is not yours!`,
-      });
-    }
-    if (articleUpdated) {
-      const articleFound = await Article.findById(id);
-      if (articleFound) {
+    const articleFound = await Article.findById(id);
+    if (articleFound) {
+      if (articleFound.author !== req.user._id.toString()) {
+        return res.status(401).json({
+          statusCode: 401,
+          msg: `You can not update an article that is not yours!`,
+        });
+      }
+
+      const articleUpdated = await Article.updateOne({ _id: id }, { ...body });
+      if (articleUpdated.acknowledged) {
+        const articleFound = await Article.findById(id);
         return res.status(200).json({
           statusCode: 200,
           data: articleFound,
         });
       } else {
-        return res.status(404).json({
-          statusCode: 404,
-          msg: `Article with ID: ${id} not found!`,
-        });
+        return next("Error trying to update an article");
       }
+    } else {
+      return res.status(404).json({
+        statusCode: 404,
+        msg: `Article with ID: ${id} not found!`,
+      });
     }
   } catch (error) {
     return next(error);
