@@ -134,3 +134,13 @@ describe("Get an article by its id", () => {
     expect(response.body.data.title).toBe("Title 1");
   });
 });
+
+describe("Logout user", () => {
+  it("it should return 200 status code -> user is logged out", async () => {
+    const response = await request(app)
+      .get("/users/logout")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body).toBe(false);
+  });
+});
