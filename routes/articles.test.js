@@ -16,6 +16,7 @@ afterAll((done) => {
 
 let cookie = "";
 let user_id = "";
+let article_id = "";
 
 describe("Collection empty -> no articles saved in DB", () => {
   it("it should return 404 status code -> no articles saved in DB", async () => {
@@ -89,10 +90,10 @@ describe("Create Article process", () => {
       .post("/articles")
       .send(article)
       .set("Cookie", cookie);
-    console.log(response.body.data);
     expect(response.status).toBe(201);
     expect(response.body.data.title).toBe("Title 1");
     expect(response.body.data.author).toBe(user_id);
+    article_id = response.body.data._id;
   });
   it("it should return 201 status code -> create a new article", async () => {
     const article = {
@@ -113,5 +114,17 @@ describe("Create Article process", () => {
     console.log(response.body.data);
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBe(2);
+  });
+});
+
+describe("Get an article by its id", () => {
+  it("it should return 404 status code -> article id not found", async () => {
+    const response = await request(app)
+      .get("/articles/64f7d1c5c19c8e4e9718caaf")
+      .set("Cookie", cookie);
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe(
+      "Article with ID: 64f7d1c5c19c8e4e9718caaf not found!"
+    );
   });
 });
