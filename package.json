@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index",
     "dev": "nodemon index",
-    "test": "jest --watch"
+    "test": "jest articles.test.js --watch"
   },
   "repository": {
     "type": "git",

@@ -104,7 +104,6 @@ describe("Create Article process", () => {
       .post("/articles")
       .send(article)
       .set("Cookie", cookie);
-    console.log(response.body.data);
     expect(response.status).toBe(201);
     expect(response.body.data.title).toBe("Title 2");
     expect(response.body.data.author).toBe(user_id);
@@ -126,5 +125,12 @@ describe("Get an article by its id", () => {
     expect(response.body.msg).toBe(
       "Article with ID: 64f7d1c5c19c8e4e9718caaf not found!"
     );
+  });
+  it("it should return 200 status code -> article id found", async () => {
+    const response = await request(app)
+      .get(`/articles/${article_id}`)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(200);
+    expect(response.body.data.title).toBe("Title 1");
   });
 });
