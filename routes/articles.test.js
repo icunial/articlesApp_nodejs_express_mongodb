@@ -160,6 +160,17 @@ describe("Update articles process", () => {
   });
 });
 
+describe("Delete article process", () => {
+  it("it should return 404 status code -> article not found", async () => {
+    const id = "64f7d1c5c19c8e4e9718caaf";
+    const response = await request(app)
+      .delete(`/articles/${id}`)
+      .set("Cookie", cookie);
+    expect(response.status).toBe(404);
+    expect(response.body.msg).toBe(`Article with ID: ${id} not found!`);
+  });
+});
+
 describe("Logout user", () => {
   it("it should return 200 status code -> user is logged out", async () => {
     const response = await request(app)
